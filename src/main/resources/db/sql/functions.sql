@@ -26,8 +26,23 @@ Exception
         RAISE NOTICE 'An error occurred while inserting user: %', SQLERRM; return null;
 end;
 $$ language plpgsql;*/
-create or replace function insert_into_user(full_name character, email character, password character,
-                                 roles varchar[]) returns response_dto
+
+
+/* response information */
+
+create type response_dto as
+(
+    code           integer,
+    "message"      varchar(258),
+    system_message text,
+    return_id      bigint
+);
+
+
+/* user insert  function */
+
+create or replace function insert_into_user(full_name character, "email" character, password character,
+                                            roles varchar[]) returns response_dto
     language plpgsql
 as
 $$
@@ -35,7 +50,7 @@ declare
     user_id bigint;
     role_id bigint;
 begin
-    if exists(select 1 from users where users.email = email) then
+    if exists(select 1 from users where users.email = "" email "") then
         return (400, 'already exist saved this email', SQLERRM, null);
     end if;
     if length(password) < 8 or length(password) > 16 then
@@ -63,10 +78,16 @@ EXCEPTION
         RETURN (500, 'An unexpected error occurred', SQLERRM, NULL);
 end;
 $$;
-create type response_dto as
-(
-    code           integer,
-    "message"      varchar(258),
-    system_message text,
-    return_id      bigint
-);
+
+create or replace function find_by_mail_return_user(email varchar) returns boolean
+    language plpgsql
+as
+$$
+declare
+
+begin
+
+end;
+
+$$
+

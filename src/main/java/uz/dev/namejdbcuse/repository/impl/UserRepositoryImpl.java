@@ -3,6 +3,7 @@ package uz.dev.namejdbcuse.repository.impl;
 import io.sentry.Sentry;
 import liquibase.exception.DatabaseException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import uz.dev.namejdbcuse.dto.ResponseDTO;
 import uz.dev.namejdbcuse.entity.Role;
 import uz.dev.namejdbcuse.entity.User;
 import uz.dev.namejdbcuse.enums.RoleName;
+import uz.dev.namejdbcuse.repository.GeneralRepository;
 import uz.dev.namejdbcuse.repository.UserRepository;
 
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl extends GeneralRepository implements UserRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -98,25 +100,23 @@ public class UserRepositoryImpl implements UserRepository {
         }
 */
 
-        ResponseDTO responseDTO = new ResponseDTO();
         String sql = "Select insert_into_user(:fullName,:email,:password,:roles)";
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("fullName", user.getFullName())
-                .addValue("email", user.getEmail())
-                .addValue("password", user.getPassword())
-                .addValue("roles", user.getRoles().stream().map(role -> role.getRoleName().name()).toArray(String[]::new));
-        namedParameterJdbcTemplate.queryForObject(sql, parameterSource, (rs, rowNum) -> {
-            responseDTO.setCode(rs.getInt("code"));
-            responseDTO.setMessage(rs.getString("message"));
-            Sentry.captureMessage(rs.getString(""));
-            responseDTO.setReturnId(rs.getObject("return_id", Long.class));
-            return responseDTO;
-        });
-        return responseDTO;
-    }
 
+
+        return namedParameterJdbcTemplate.queryForObject(
+                sql,
+
+                new MapSqlParameterSource()
+                        .addValue("fullName", user.getFullName())
+                        .addValue("email", user.getEmail())
+                        .addValue("password", user.getPassword())
+                        .addValue("role s", user.getRoles().stream().map(role -> role.getRoleName().name()).toArray(String[]::new)),
+                rowMapper);
+    }
     @Override
     public void deleteUser(UUID userId) {
 
     }
+
+
 }

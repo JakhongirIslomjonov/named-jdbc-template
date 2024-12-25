@@ -1,16 +1,24 @@
 spring:
+  liquibase:
+      change-log: classpath:/db/changelog/db.changelog-master.xml
+
+  application:
+    name: name-jdbc
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
+    driverClassName: com.p6spy.engine.spy.P6SpyDriver
     password: 0095
-    driverClassName: org.postgresql.Driver
+    url: jdbc:p6spy:postgresql://localhost:5432/postgres
+    username: postgres
   jpa:
     hibernate:
-      ddl-auto: none
-    show-sql: true
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
+        types:
+          print:
+            warn :false
+    show-sql: true
 sentry:
   dsn: https://e21d5808d8b53f1bea05d737e50cf20d@o4508398301872128.ingest.de.sentry.io/4508398307704912
   environment: "development"
