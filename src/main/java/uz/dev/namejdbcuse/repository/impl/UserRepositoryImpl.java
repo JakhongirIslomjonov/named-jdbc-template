@@ -101,11 +101,8 @@ public class UserRepositoryImpl extends GeneralRepository implements UserReposit
 */
 
         String sql = "Select insert_into_user(:fullName,:email,:password,:roles)";
-
-
         return namedParameterJdbcTemplate.queryForObject(
                 sql,
-
                 new MapSqlParameterSource()
                         .addValue("fullName", user.getFullName())
                         .addValue("email", user.getEmail())
@@ -113,10 +110,7 @@ public class UserRepositoryImpl extends GeneralRepository implements UserReposit
                         .addValue("role s", user.getRoles().stream().map(role -> role.getRoleName().name()).toArray(String[]::new)),
                 rowMapper);
     }
-    @Override
-    public void deleteUser(UUID userId) {
 
-    }
 
 
 }

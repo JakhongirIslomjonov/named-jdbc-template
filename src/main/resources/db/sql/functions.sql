@@ -1,34 +1,3 @@
-/*create or replace function insert_into_user(full_name varchar, email varchar, password varchar)
-    returns bigint as
-$$
-declare
-    new_user_id bigint;
-    email_count int ;
-begin
-    begin
-        Select count(*) into email_count from users where users.email = :email;
-        if email_count > 0 || length(email) > 255 then
-            raise exception 'Email % already  exist or length exceeded' , email;
-        end if;
-        if length(password) < 8 || length(password) > 16 then
-            raise exception ' password size not right';
-        end if;
-        if length(full_name) > 255 || length(full_name) < 4 then
-            raise exception ' full Name length exceeded or less';
-        end if;
-    end;
-    insert into users(full_name, email, password) values (full_name, email, password) returning id into new_user_id;
-    return new_user_id;
-Exception
-    when unique_violation then
-        raise notice 'error save user '; return null;
-    when others then
-        RAISE NOTICE 'An error occurred while inserting user: %', SQLERRM; return null;
-end;
-$$ language plpgsql;*/
-
-
-/* response information */
 
 create type response_dto as
 (

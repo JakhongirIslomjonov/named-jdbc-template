@@ -17,8 +17,6 @@ public interface UserRepository {
 
     ResponseDTO saveUser(User user) throws DatabaseException;
 
-    void deleteUser(UUID userId);
-
 
 
 }
